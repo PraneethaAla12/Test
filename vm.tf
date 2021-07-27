@@ -17,16 +17,6 @@ resource "azurerm_resource_group" "example" {
   location = "West Europe"
 }
 
-module "linuxservers" {
-  source              = "Azure/compute/azurerm"
-  resource_group_name = azurerm_resource_group.example.name
-  vm_os_simple        = "UbuntuServer"
-  public_ip_dns       = ["linsimplevmips"] // change to a unique name per datacenter region
-  vnet_subnet_id      = module.network.vnet_subnets[0]
-
-  depends_on = [azurerm_resource_group.example]
-}
-
 module "windowsservers" {
   source              = "Azure/compute/azurerm"
   resource_group_name = azurerm_resource_group.example.name
@@ -47,10 +37,6 @@ module "network" {
   subnet_names        = ["subnet1","subnet2"]
 
   depends_on = [azurerm_resource_group.example]
-}
-
-output "linux_vm_public_name" {
-  value = module.linuxservers.public_ip_dns_name
 }
 
 output "windows_vm_public_name" {
